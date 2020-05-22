@@ -38,7 +38,7 @@
                     username:'admin',
                     password:'123456'
                 },
-                //表单验证规则对象
+                //登录表单验证规则对象
                 loginFormRules:{
                     username:[
                         { required: true, message: '请输入登录名称', trigger: 'blur' },
