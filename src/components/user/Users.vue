@@ -57,7 +57,7 @@
                     :page-sizes="[2, 4, 10, 20]"
                     :page-size="queryInfo.pagesize"
                     layout="total, sizes, prev, pager, next, jumper"
-                    :total="totalpage">
+                    :total="total">
             </el-pagination>
         </el-card>
         <!--        添加用户弹窗-->
@@ -77,8 +77,7 @@
                     <el-input v-model="addUserForm.mobile"></el-input>
                 </el-form-item>
             </el-form>
-
-            <!--            底部区域-->
+            <!--底部区域-->
             <span slot="footer" class="dialog-footer">
         <el-button @click="addUserTanChuangIsShow = false">取 消</el-button>
         <el-button type="primary" @click="addUser">确 定</el-button>
@@ -163,7 +162,7 @@
                     pagesize: 4 //当前每页显示多少条
                 },
                 userlist: [], //响应过来的用户列表
-                totalpage: 0, // 响应过来的页码总数
+                total: 0, // 响应过来的总条数
                 addUserTanChuangIsShow: false,  //添加用户弹窗是否显示
                 editUserTanChuangIsShow: false, //修改用户弹窗是否显示
                 setRoleTanChuangIsShow: false,  //分配角色弹框是否显示
@@ -223,7 +222,7 @@
                     return this.$message.error('获取失败')
                 }
                 this.userlist = res.data.users
-                this.totalpage = res.data.total
+                this.total = res.data.total
             },
             handleSizeChange(newSize) {  //点击切换每页显示的条数
                 // console.log(newSize)

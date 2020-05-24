@@ -11,7 +11,7 @@
             <el-button type="primary" @click="addRolesTanKuangIsShow=true">添加角色</el-button>
             <!--列表展示-->
             <el-table :data="roleList" border stripe>
-                <!--                展开列-->
+                <!--展开列-->
                 <el-table-column type="expand">
                     <template slot-scope="scope">
                         <el-row :class="['ycenter','boderbuttom', i1===0 ? 'bordertop':'']"
@@ -41,9 +41,9 @@
                                 </el-row>
                             </el-col>
                         </el-row>
-                        <pre>
+<!--                        <pre>-->
 <!--                            {{scope.row}}-->
-                        </pre>
+<!--                        </pre>-->
 
                     </template>
                 </el-table-column>
@@ -321,7 +321,6 @@
     .bordertop {
         border-top: 1px solid pink;
     }
-
     /*纵向居中对起*/
     .ycenter {
         display: flex;
