@@ -54,14 +54,15 @@
                     <el-form-item label="分类名称" prop="cat_name">  <!--prop是指向校验规则的-->
                         <el-input v-model="addCateForm.cat_name"></el-input>
                     </el-form-item>
-                    <el-form-item label="父级名称" prop="cat_name">  <!--prop是指向校验规则的-->
+                    <el-form-item label="父级名称">
                         <!--                        options 是绑定数据源的，props是配置显示项的-->
                         <el-cascader
                                 v-model="parentCate"
                                 :options="parentCateList"
                                 :props="propsSet"
                                 :clearable="true"
-                                change-on-select
+                                @visible-change="elCascaderOnlick"
+                                @expand-change="elCascaderOnlick"
                                 @change="parentCateChanged">
                         </el-cascader>
                     </el-form-item>
@@ -73,7 +74,7 @@
                     <el-button type="primary" @click="confirmCate">确 定</el-button>
                  </span>
             </el-dialog>
-            <!--            编辑商品分类-->
+            <!--编辑商品分类-->
             <el-dialog title="编辑商品分类" :visible.sync="editCateTankuangIsShow" width="50%"
                        @close="editCateTanKuangIsClosed">
                 <!--内容主题区域-->
@@ -112,7 +113,6 @@
                     {
                         label: '分类名称',
                         prop: 'cat_name'
-
                     },
                     {
                         label: '是否有效',
@@ -145,7 +145,7 @@
                 addCateFormRules: {
                     cat_name: [
                         {required: true, message: '请输入分类名称', trigger: 'blur'},
-                        {min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'}
+                        {min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur'}
                     ]
                 },
                 parentCate: [],   //选择的父级分类
@@ -155,6 +155,7 @@
                     value: 'cat_id',
                     label: 'cat_name',
                     children: 'children',
+                    checkStrictly:true  //change-on-select 这个直接添加到标签上，但是现在被淘汰了，效果类似
                 },
                 editCateForm: {
                     cat_name: ''
@@ -162,7 +163,6 @@
                 //临时保存被编辑的分类的id
                 editId: 0,
             }
-
         },
         created() {
             this.getCateList()
@@ -183,7 +183,6 @@
                 // console.log(newSize)
                 this.queryInfo.pagesize = newSize
                 this.getCateList()
-
             },
             handleCurrentChange(newPage) {  //根据当前的页码值来切换当前的页面
                 this.queryInfo.pagenum = newPage
@@ -202,11 +201,10 @@
                     this.parentCateList = res.data
                     // console.log(this.parentCateList);
                 }
-
             },
             //当选项框内的值发生变化时
             parentCateChanged() {
-                //监听父级分类绑定的数组的长度,如果长度为0，说明添加的是一
+                // 监听父级分类绑定的数组的长度,如果长度为0，说明添加的是一
                 // 级分类，如果长度为1，说明添加的事二级分类，如果长度为2，说明添加
                 // 的是三级分类
                 if (this.parentCate.length > 0) {
@@ -216,10 +214,31 @@
                 } else {
                     this.addCateForm.cat_pid = 0
                     this.addCateForm.cat_level = 0
+                    //这里要注意了，当创建一级分类是，如果没有改变过级联选择器里的值，那么这个函数不会监听到，所以在addCateForm
+                    //里cat_pid和cat_level的初始值设置成0（我在这里调试了好久）
                 }
-
             },
+        //*************************解决级联选择器在任意级选择只能点击圆点的问题****************************
+            elCascaderOnlick() {
+                let that = this;
+                setTimeout(function () {
+                    document.querySelectorAll(".el-cascader-node__label").forEach(el => {
+                        el.onclick = function () {
+                            this.previousElementSibling.click();
+                            that.$refs.addCateFormRef.dropDownVisible = false;
+                        };
+                    });
+                    document.querySelectorAll(".el-cascader-panel .el-radio").forEach(el => {
+                            el.onclick = function () {
+                                that.$refs.addCateFormRef.dropDownVisible = false;
+                            };
+                        });
+                }, 100);
+            },
+
+
             confirmCate() {
+                console.log(this);
                 this.$refs.addCateFormRef.validate(async valid => {
                     if (valid) {
                         const {data: res} = await this.$http.post('categories', this.addCateForm)
