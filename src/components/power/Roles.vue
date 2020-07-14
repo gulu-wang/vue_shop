@@ -16,13 +16,13 @@
                     <template slot-scope="scope">
                         <el-row :class="['ycenter','boderbuttom', i1===0 ? 'bordertop':'']"
                                 v-for="(item1,i1) in scope.row.children" :key="item1.id">
-                            <!--                            一级权限列-->
+                            <!--一级权限列-->
                             <el-col :span="5">
                                 <el-tag closable @close="deleteRightsTagById(scope.row,item1.id)">{{item1.authName}}
                                 </el-tag>
                                 <i class="el-icon-caret-right"></i>
                             </el-col>
-                            <!--                            二,三级权限列-->
+                            <!--二,三级权限列-->
                             <el-col :span="19">
                                 <el-row :class="['ycenter',i2 === 0?'':'bordertop']"
                                         v-for="(item2,i2) in item1.children" :key="item2.id">
@@ -33,7 +33,7 @@
                                         <i class="el-icon-caret-right"></i>
                                     </el-col>
                                     <el-col :span="18">
-                                        <el-tag type="warning" v-for="(item3,i3) in item2.children" :key="item3.id"
+                                        <el-tag type="warning" v-for="item3 in item2.children" :key="item3.id"
                                                 closable @close="deleteRightsTagById(scope.row,item3.id)">
                                             {{item3.authName}}
                                         </el-tag>

@@ -17,12 +17,22 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
+//导入nprogress 插件  作用是展现加载进度条
+import Nprogress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 //配置请求根路径
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
-//将请求预处理
+//请求拦截器，将请求预处理
 axios.interceptors.request.use(config=>{
+  Nprogress.start()   //显示进度条
   config.headers.Authorization = window.sessionStorage.getItem('token')
   // console.log(config)
+  return config
+})
+//响应拦截器
+axios.interceptors.response.use(config=>{
+  Nprogress.done()   //隐藏进度条
   return config
 })
 //将 axios 挂载到vue的原型对象上
